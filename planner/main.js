@@ -9,7 +9,11 @@ const args = () => ({ a: randInt(0, 40), b: randInt(0, 40) })
 const generateTasks = i =>
   new Array(i).fill(1).map(_ => ({ type: taskType(), args: args() }))
 
-let workers = [process.env.WORKER]
+let adds = [process.env.ADD]
+let mults = [process.env.MULT]
+
+let workers = adds.concat(mults)
+
 let tasks = generateTasks(nbTasks)
 let taskToDo = nbTasks
 
@@ -47,7 +51,12 @@ const main = async () => {
   while (taskToDo > 0) {
     await wait(100)
     if (workers.length === 0 || tasks.length === 0) continue
-    sendTask(workers[0], tasks[0])
+    if(tasks[0].type == 'add') {
+      sendTask(workers.find(el => adds.includes(el)), tasks[0])
+    }
+    else {
+      sendTask(workers.find(el => mults.includes(el)), tasks[0])
+    }
   }
 }
 

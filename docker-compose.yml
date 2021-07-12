@@ -13,22 +13,37 @@ services:
         networks:
             - "myNetwork"
         ports:
-            - "8080:8080"
+            - "3000:3000"
         environment:
             TASKS: '4'
-            WORKER: 'http://worker:3000'
+            ADD: 'http://add:3001'
+            MULT: 'http://mult:3002'
         depends_on: 
-            - "worker"
+            - "add"
+            - "mult"
 
-    worker:
+
+    add:
+        build:
+            context: ./worker
+            dockerfile: ./DockerFile
+        ports: 
+            - "3001:3001"
+        networks:
+            - "myNetwork"
+        environment:
+            ADD: 'true'
+            PORT: '3001'
+
+
+    mult:
         build:
             context: ./worker
             dockerfile: ./DockerFile
         ports:
-            - "3000:3000"
+            - "3002:3002"
         networks:
             - "myNetwork"
         environment:
-            PORT: '3000'
             MULT: 'true'
-            ADD: 'true'
+            PORT: '3002'
