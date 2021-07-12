@@ -22,7 +22,6 @@ services:
             - "add"
             - "mult"
 
-
     add:
         build:
             context: ./worker
