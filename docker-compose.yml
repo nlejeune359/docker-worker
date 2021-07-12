@@ -1,0 +1,34 @@
+version: "3"
+
+networks:
+    myNetwork:
+        driver: bridge
+
+services:
+
+    planner:
+        build:
+            context: ./planner/
+            dockerfile: ./DockerFile
+        networks:
+            - "myNetwork"
+        ports:
+            - "8080:8080"
+        environment:
+            TASKS: '4'
+            WORKER: 'http://worker:3000'
+        depends_on: 
+            - "worker"
+
+    worker:
+        build:
+            context: ./worker
+            dockerfile: ./DockerFile
+        ports:
+            - "3000:3000"
+        networks:
+            - "myNetwork"
+        environment:
+            PORT: '3000'
+            MULT: 'true'
+            ADD: 'true'
